@@ -6,9 +6,15 @@ public class FaceDetector : MonoBehaviour
 {
     // Start is called before the first frame update
 
+    public GameObject bird;
+
+    public int offsetY;
     WebCamTexture _webCamTexture;
     CascadeClassifier cascade;
     OpenCvSharp.Rect Myface;
+
+    float lastY = 0;
+
 
     void Start()
     {
@@ -24,7 +30,8 @@ public class FaceDetector : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //GetComponent<Renderer>().material.mainTexture = _webCamTexture;
+     
+
         Mat frame = OpenCvSharp.Unity.TextureToMat(_webCamTexture);
         if (frame is null)
         {
@@ -36,12 +43,22 @@ public class FaceDetector : MonoBehaviour
 
     void FindNewFace(Mat frame)
     {
+     
         var faces = cascade.DetectMultiScale(frame, 1.1, 2, HaarDetectionType.ScaleImage);
 
         if (faces.Length >= 1)
         {
-            Debug.Log(faces[0].Location);
+           
+            //Debug.Log(Camera.main.ScreenToViewportPoint(new Vector3(faces[0].Location.X, faces[0].Location.Y,0)));
             Myface = faces[0];
+             Vector3  desirePosition=  Camera.main.ScreenToWorldPoint(new Vector3(faces[0].Location.X,faces[0].Location.Y,0));
+            //  desirePosition.z = -10;
+            desirePosition.y = -1*desirePosition.y - offsetY;
+           
+            bird.transform.position = new Vector3(bird.transform.position.x,Mathf.Clamp(desirePosition.y,-3,3), -10);
+  
+            //Debug.Log($" {bird.transform.position.y}");
+            lastY = faces[0].Y;
         }
     }
 

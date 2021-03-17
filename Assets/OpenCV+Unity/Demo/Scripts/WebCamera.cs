@@ -62,7 +62,7 @@ namespace OpenCvSharp.Demo
 				// set device up
 				if (-1 != cameraIndex)
 				{
-					webCamDevice = WebCamTexture.devices[cameraIndex];
+					webCamDevice = WebCamTexture.devices[0];
 					webCamTexture = new WebCamTexture(webCamDevice.Value.name);
 
 					// read device params and make conversion map
