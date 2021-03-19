@@ -8,7 +8,7 @@ public class OpenCvBasicOperations : MonoBehaviour
 {
     public List<SpriteRenderer> imagesBase;
     public List<Texture2D> textures ;
-    List<Mat> matResults;
+    List<Mat> matResults = new List<Mat>();
 
     List<Mat> mats = new List<Mat>();
     void Start()
@@ -24,17 +24,20 @@ public class OpenCvBasicOperations : MonoBehaviour
         //Get type of Mat
         //print(mat.Type().ToString());
 
-        Mat[] channels = mats[0].Split();
 
-        Mat mainMat = (0.1 * channels[0] + 0.6 * channels[1] + 0.3 * channels[2]);
 
+        // Mat mainMat = (0.1 * channels[0] + 0.6 * channels[1] + 0.3 * channels[2]);
+      
+
+        matResults[0] = GrayScale(mats[0]);
+        matResults[1]= Negative(mats[0]);
 
         for (int i = 0; i < imagesBase.Count; i++)
         {
             imagesBase[i].sprite = CreateNewSprite(matResults[i]);
         }
 
-        imagesBase.ForEach(imageBase=> imageBase.sprite = CreateNewSprite(mainMat));
+      //  imagesBase.ForEach(imageBase=> imageBase.sprite = CreateNewSprite(mainMat));
 
 
 
@@ -58,9 +61,10 @@ public class OpenCvBasicOperations : MonoBehaviour
 
     public Mat GrayScale(Mat mat)
     {
-        Cv2.CvtColor(mat, mat, ColorConversionCodes.BGR2GRAY);
+        Mat result = new Mat();
+        Cv2.CvtColor(mat, result, ColorConversionCodes.BGR2GRAY);
 
-        return mat;
+        return result;
     }
 
     public Mat HideChannel(Mat mat,int  i)
@@ -87,4 +91,25 @@ public class OpenCvBasicOperations : MonoBehaviour
     }
     //Show intensity of specific channel( R,G,B)
     Mat ShowSingleChannel(Mat mat, int i) => mat.ExtractChannel(i);
+
+    void DifferentGrayScale()
+    {
+        Mat[] channels = mats[0].Split();
+
+        matResults[0] = (channels[0] + channels[1] + channels[2]) / 3;
+        matResults[1] = 0.1 * channels[0] + 0.6 * channels[1] + 0.3 * channels[2]; //Filogenetica
+        matResults[2] = GrayScale(mats[0]);//Same like Filogenetica
+    }
+
+    void EachChannelIntensity()
+    {
+        Mat[] channels = mats[0].Split();
+
+        matResults[0] = channels[0];
+        matResults[1] = channels[1];
+        matResults[2] = channels[2];
+    }
+    
+    Mat Negative(Mat mat) => Scalar.All(255)-mat;
+  
 }
