@@ -11,6 +11,9 @@ public class OpenCv_MovDetection : MonoBehaviour
 
     public List<double> snapsValues = new List<double>(); 
     List<Mat> mats = new List<Mat>();
+    Mat mask = new Mat();
+    OpenCvSharp.Rect sub = new OpenCvSharp.Rect();
+    OpenCvSharp.Rect sub2 = new OpenCvSharp.Rect();
 
     void Start()
     {
@@ -19,45 +22,25 @@ public class OpenCv_MovDetection : MonoBehaviour
         webCamTexture = new WebCamTexture(devices[0].name);
 
         webCamTexture.Play();
-       
 
         CreateMask();
+        
         //StartCoroutine(BasicDetectorMovement());
     }
 
 
     private void Update()
     {
-     /*   
-        Mat result = OpenCvSharp.Unity.TextureToMat(webCamTexture);
-     
 
-        Mat mat = new Mat(result.Height, result.Width, MatType.CV_8UC3, new Scalar(0, 0, 0));
-    
-
-         mat[new OpenCvSharp.Rect(100, 100, 50, 50)].SetTo(Scalar.All(255));
-
- 
-
-
-        for (int i = 0; i < mat.Height; i++)
-        {
-            for (int j = 0; j < mat.Width; j++)
-            {
-                if (mat.At<Vec3b>(new int[2] { i, j }).Item0 == 255)
-                    
-                    continue;
-                Vec3b vec = new Vec3b(100, 100, 100);
-                result.Set<Vec3b>(new int[2] { i, j }, vec);
-
-            }
-        }
-
-       
-
-        GetComponent<Renderer>().material.mainTexture = OpenCvSharp.Unity.MatToTexture(result);
+        //Apply target zone to webcamTexture
+        mask[sub] = OpenCvSharp.Unity.TextureToMat(webCamTexture)[sub];
+        mask[sub2] = OpenCvSharp.Unity.TextureToMat(webCamTexture)[sub2];
         
-        */
+        //Update texture
+
+        GetComponent<Renderer>().material.mainTexture = OpenCvSharp.Unity.MatToTexture(mask);
+        
+      
     }
 
     // Update is called once per frame
@@ -102,43 +85,12 @@ public class OpenCv_MovDetection : MonoBehaviour
 
     void CreateMask()
     {
+       //Set all mask to black
+        mask = new Mat(webCamTexture.height, webCamTexture.width, MatType.CV_8UC3, new Scalar(0, 0, 0));
+            
+        // Get rectangle of target zone
+        sub = new OpenCvSharp.Rect(webCamTexture.width / 2 + 100, webCamTexture.height / 2 - 100, 250, 250);
+        sub2 = new OpenCvSharp.Rect(webCamTexture.width / 2 - 400, webCamTexture.height / 2 - 100, 250, 250);
 
-        Mat original = OpenCvSharp.Unity.TextureToMat(texture);
-        Mat result = OpenCvSharp.Unity.TextureToMat(texture); //new Mat(720, 1200, MatType.CV_8UC3, new Scalar(0, 0, 0));
-      
-        Mat mat = new Mat(result.Height, result.Width, MatType.CV_8UC3, new Scalar(0, 0, 0));
-      
-        mat[new OpenCvSharp.Rect(result.Width/2, result.Height/2, 100, 100)].SetTo(Scalar.All(255));
-
-        for (int i = 0; i < mat.Height; i++)
-        {
-            for (int j = 0; j < mat.Width; j++)
-            {
-                if (mat.At<Vec3b>(new int[2] { i, j })[0] != 255)
-                {
-
-                    //mat.Set<int>(new int[2] { i, j }, 255);
-                    Vec3b vec = new Vec3b(0, 0, 0);
-                    result.Set<Vec3b>(new int[2] { i, j }, vec);
-
-
-                }
-                else
-                {
-                    result[new OpenCvSharp.Rect(i,j, 1, 1)].SetTo(Scalar.All(0));
-
-                    //result.Set<Vec3b>(new int[2] { i, j }, original.At<Vec3b>(new int[2] { i, j }));
-                }
-              
-
-            }
-        }
-
-
-        
-
-
-         GetComponent<Renderer>().material.mainTexture = OpenCvSharp.Unity.MatToTexture(mat);
-        Debug.Log("oliwis");
     }
 }
