@@ -13,9 +13,10 @@ public class OPenCvColor : MonoBehaviour
         Mat matRGB = OpenCvSharp.Unity.TextureToMat(texture);
 
         //Sow all color types
-        //images[0].sprite = CreateNewSprite(GetAllColorTypes(matRGB));
+        images[0].sprite = CreateNewSprite(GetAllColorTypes(matRGB));
 
         //Filtering license plata
+        /*
         Mat matLab = new Mat();
         Cv2.CvtColor(matRGB, matLab, ColorConversionCodes.BGR2Lab);
         matLab = matLab.ExtractChannel(2);
@@ -38,7 +39,7 @@ public class OPenCvColor : MonoBehaviour
         
         images[0].sprite = CreateNewSprite(matRGB);
 
-
+        */
 
 
     }
