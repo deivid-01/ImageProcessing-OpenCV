@@ -2,7 +2,6 @@
  OpenCV exploration with Unity using Image Processing techniques
 - Color Spaces (RBG,HSV,Lab)<br/>
 ![ezgif com-gif-maker (20)](https://user-images.githubusercontent.com/50857082/190869673-878c0575-5f13-4879-bd0c-92b95add46ae.gif)
-<br/>
 - Morphology:<br/>
 ![ezgif com-gif-maker (21)](https://user-images.githubusercontent.com/50857082/190869725-153857d9-dfdc-4f4e-8197-148be36faf84.gif)
 
